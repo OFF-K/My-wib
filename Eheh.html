@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Day Surprise</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;700&display=swap');
+
+        :root {
+            --primary-color: #ff4d94;
+            --secondary-color: #ff85b2;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #ffcccc, #ffe6e6);
+            margin: 0;
+            padding: 20px;
+            overflow-x: hidden;
+            color: var(--primary-color);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .light-effect {
+            position: fixed;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 70%);
+            pointer-events: none;
+            animation: float 8s infinite linear;
+            z-index: 0;
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3rem;
+            animation: fadeIn 2s ease-in-out;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 2;
+        }
+
+        button {
+            margin: 10px;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            position: relative;
+            z-index: 2;
+        }
+
+        #startYesButton {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            color: white;
+            box-shadow: 0 8px 15px rgba(255, 102, 178, 0.5);
+        }
+
+        #startNoButton {
+            background: linear-gradient(135deg, #ffe6f2, #ffd9e6);
+            color: var(--primary-color);
+            box-shadow: 0 8px 15px rgba(255, 102, 178, 0.3);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .love-message {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem;
+            margin: 20px 0;
+            animation: fadeIn 2s ease-in-out;
+            line-height: 1.6;
+            position: relative;
+            z-index: 2;
+        }
+
+        .video-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 15px rgba(255, 102, 178, 0.5);
+            aspect-ratio: 16/9;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .video-container.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .envelope-wrapper {
+            position: relative;
+            margin: 50px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .click-label {
+            font-family: 'Dancing Script', cursive;
+            color: #ff0066;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            animation: pulse 2s infinite;
+            position: relative;
+            z-index: 2;
+        }
+
+        .envelope-emoji {
+            font-size: 8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 5px 15px rgba(255, 50, 150, 0.3));
+            position: relative;
+            z-index: 2;
+        }
+
+        .envelope-emoji:active {
+            transform: scale(0.95);
+        }
+
+        .letter {
+            position: absolute;
+            width: 80%;
+            max-width: 600px;
+            background: #fff9f9;
+            border-radius: 15px;
+            padding: 35px;
+            box-shadow: 0 15px 40px rgba(255, 50, 150, 0.2);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            font-family: 'Dancing Script', cursive;
+            color: #ff1a1a;
+            font-size: 1.6rem;
+            line-height: 1.8;
+            text-align: center;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .letter.visible {
+            opacity: 1;
+            transform: translate(-50%, -60%);
+            pointer-events: auto;
+        }
+
+        .hearts-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 1.8rem;
+            animation: heartFloat 2.5s ease-out forwards;
+            opacity: 1;
+        }
+
+        .gif-container {
+            margin-top: 20px;
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(255, 50, 150, 0.2);
+            animation: fadeIn 2s ease-in-out;
+            z-index: 2;
+        }
+
+        .gif-container img {
+            width: 100%;
+            display: block;
+        }
+
+        .close-envelope {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: bounce 2s infinite;
+        }
+
+        /* إضافة أنماط الجيف الجديد */
+        .special-gif {
+            max-width: 350px;
+            margin: 25px auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(255, 50, 150, 0.4);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease-in-out;
+        }
+
+        .special-gif.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .special-gif img {
+            width: 100%;
+            height: auto;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes heartFloat {
+            0% { 
+                opacity: 1;
+                transform: translateY(0) rotate(0deg) scale(1);
+            }
+            100% { 
+                opacity: 0;
+                transform: translateY(-100px) rotate(360deg) scale(0.5);
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(100px, 100px) rotate(90deg); }
+            50% { transform: translate(200px, 0) rotate(180deg); }
+            75% { transform: translate(100px, -100px) rotate(270deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
+        }
+
+        @media (max-width: 480px) {
+            .envelope-emoji {
+                font-size: 6rem;
+            }
+            
+            .letter {
+                font-size: 1.4rem;
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .click-label {
+                font-size: 1.5rem;
+            }
+
+            .gif-container {
+                max-width: 300px;
+            }
+
+            .special-gif {
+                max-width: 280px;
+                margin: 20px auto;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .special-gif {
+                max-width: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="light-effect" style="top:20%;left:10%"></div>
+    <div class="light-effect" style="top:70%;left:80%"></div>
+    <div class="light-effect" style="top:40%;left:90%"></div>
+
+    <div class="container">
+        <h1 id="startQuestion">Will you be my Valentine?</h1>
+        
+        <!-- الجيف الخاص -->
+        <div class="special-gif hidden" id="specialGif">
+            <img src="https://media1.giphy.com/media/QEN54dmAJuTF0wBWXz/giphy.gif?cid=6c09b9529p71d09txqejrtze1ryeo77cpbods3e897rt39tg&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=g" 
+                 alt="Romantic Kiss GIF"
+                 class="responsive-gif">
+        </div>
+
+        <button id="startYesButton">Yes</button>
+        <button id="startNoButton">No</button>
+
+        <div id="step1" class="hidden">
+            <h1>Are you sure about that?</h1>
+            <button id="yesButton1">Yes</button>
+            <button id="noButton1">No</button>
+        </div>
+
+        <div id="step2" class="hidden">
+            <div class="love-message">"You are the melody in my heart and the sparkle in my eyes."</div>
+            <h1>Want to hear more?</h1>
+            <button id="yesButton2">Yes</button>
+            <button id="noButton2">No</button>
+        </div>
+
+        <div id="step3" class="hidden">
+            <div class="love-message">"Every moment with you feels like a dream I never want to wake up from."</div>
+            <h1>More surprises for you?</h1>
+            <button id="yesButton3">Yes</button>
+            <button id="noButton3">No</button>
+        </div>
+
+        <div id="step4" class="hidden">
+            <div class="love-message">"Here's our special song, just for us! 🎵"</div>
+            <div id="countdown" style="font-size: 2rem; color: var(--primary-color); margin: 20px;"></div>
+            <div class="video-container">
+                <iframe id="videoPlayer" 
+                        src="https://www.youtube.com/embed/e5t1XD950Us" 
+                        title="YouTube video player" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                </iframe>
+            </div>
+            <h1>Shall we keep going?</h1>
+            <button id="yesButton4">Yes</button>
+            <button id="noButton4">No</button>
+        </div>
+
+        <div id="step5" class="hidden">
+            <div class="love-message">"Congratulations! You're officially my Valentine ❤️"</div>
+            <h1>Your final surprise...</h1>
+            <div class="envelope-wrapper">
+                <div class="click-label">Click to Open</div>
+                <div class="envelope-emoji" id="envelope">💌</div>
+                <div class="hearts-container" id="heartsContainer"></div>
+                <div class="gif-container">
+                    <img src="https://media0.giphy.com/media/K6UsdhgMwi6im1mRQ0/giphy.gif?cid=6c09b952q0u49ewfst3uc4pj1ctf1saqfedk958aveje2rgv&ep=v1_internal_gif_by_id&rid=giphy.gif&ct=g" alt="Surprise GIF">
+                </div>
+                <div class="letter" id="letter">
+                    <div class="close-envelope" id="closeEnvelope">💌</div>
+                    <p>
+                        My Dearest Love,<br><br>
+                        Like stars that dance across the night,<br>
+                        Your love fills my world with light.<br>
+                        Through every season, come what may,<br>
+                        I'll cherish you in every way.<br><br>
+                        Will you be my always and forever?<br><br>
+                        💞 Eternally Yours,<br>
+                        Your One & Only
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="backgroundMusic" src="https://www.bensound.com/bensound-music/bensound-love.mp3" loop></audio>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const buttons = {
+            start: {
+                yes: document.getElementById('startYesButton'),
+                no: document.getElementById('startNoButton')
+            },
+            step1: {
+                yes: document.getElementById('yesButton1'),
+                no: document.getElementById('noButton1')
+            },
+            step2: {
+                yes: document.getElementById('yesButton2'),
+                no: document.getElementById('noButton2')
+            },
+            step3: {
+                yes: document.getElementById('yesButton3'),
+                no: document.getElementById('noButton3')
+            },
+            step4: {
+                yes: document.getElementById('yesButton4'),
+                no: document.getElementById('noButton4')
+            }
+        };
+
+        const steps = {
+            start: document.getElementById('startQuestion'),
+            step1: document.getElementById('step1'),
+            step2: document.getElementById('step2'),
+            step3: document.getElementById('step3'),
+            step4: document.getElementById('step4'),
+            step5: document.getElementById('step5')
+        };
+
+        const elements = {
+            envelope: document.getElementById('envelope'),
+            letter: document.getElementById('letter'),
+            heartsContainer: document.getElementById('heartsContainer'),
+            music: document.getElementById('backgroundMusic'),
+            videoContainer: document.querySelector('.video-container'),
+            countdown: document.getElementById('countdown'),
+            closeEnvelope: document.getElementById('closeEnvelope'),
+            videoPlayer: document.getElementById('videoPlayer'),
+            specialGif: document.getElementById('specialGif')
+        };
+
+        let isOpen = false;
+        let player;
+
+        // YouTube Player Initialization
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('videoPlayer', {
+                events: {
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        // Video State Control
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.PLAYING) {
+                elements.music.pause();
+            } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
+                elements.music.play().catch(() => {});
+            }
+        }
+
+        // تشغيل الموسيقى التلقائي
+        elements.music.play().catch(error => {
+            console.log('يجب النقر لبدء الموسيقى');
+        });
+
+        // إنشاء تأثير القلوب
+        const createHearts = () => {
+            const heartCount = 30;
+            for (let i = 0; i < heartCount; i++) {
+                const heart = document.createElement('div');
+                heart.innerHTML = '❤️';
+                heart.className = 'heart';
+                
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 150 + Math.random() * 100;
+                const x = Math.cos(angle) * distance;
+                const y = Math.sin(angle) * distance;
+                
+                heart.style.left = `calc(50% + ${x}px)`;
+                heart.style.top = `calc(50% + ${y}px)`;
+                heart.style.color = `hsl(${Math.random() * 360}, 70%, 60%)`;
+                heart.style.fontSize = `${Math.random() * 2 + 1.5}rem`;
+                
+                elements.heartsContainer.appendChild(heart);
+                setTimeout(() => heart.remove(), 2500);
+            }
+        };
+
+        // إعداد زر "لا" المتحرك
+        const setupNoButton = (noButton, yesButton) => {
+            let clickCount = 0;
+            noButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const maxX = window.innerWidth - noButton.offsetWidth;
+                const maxY = window.innerHeight - noButton.offsetHeight;
+                const randomX = Math.random() * maxX;
+                const randomY = Math.random() * maxY;
+                
+                noButton.style.position = 'absolute';
+                noButton.style.left = `${randomX}px`;
+                noButton.style.top = `${randomY}px`;
+
+                clickCount++;
+                if (clickCount >= 10) {
+                    yesButton.textContent = "FUCK YOU CHOSE YES!";
+                    noButton.disabled = true;
+                    noButton.style.opacity = '0.5';
+                } else if (clickCount >= 6) {
+                    yesButton.textContent = "REALLY?";
+                } else if (clickCount >= 3) {
+                    yesButton.textContent = "SURE?";
+                }
+
+                yesButton.style.fontSize = `${parseFloat(getComputedStyle(yesButton).fontSize) * 1.1}px`;
+
+                const face = document.createElement('div');
+                face.textContent = '😒';
+                face.style.position = 'absolute';
+                face.style.left = `${e.clientX}px`;
+                face.style.top = `${e.clientY}px`;
+                face.style.fontSize = '2rem';
+                document.body.appendChild(face);
+                setTimeout(() => face.remove(), 2000);
+            });
+        };
+
+        // تطبيق إعدادات زر "لا"
+        Object.values(buttons).forEach(btnSet => {
+            if (btnSet.no) setupNoButton(btnSet.no, btnSet.yes);
+        });
+
+        // فتح/إغلاق الخطاب
+        elements.envelope.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (!isOpen) {
+                elements.letter.classList.add('visible');
+                createHearts();
+                isOpen = true;
+            } else {
+                elements.letter.classList.remove('visible');
+                elements.heartsContainer.innerHTML = '';
+                isOpen = false;
+            }
+        });
+
+        // إغلاق الخطاب بالزر الصغير
+        elements.closeEnvelope.addEventListener('click', (e) => {
+            e.stopPropagation();
+            elements.letter.classList.remove('visible');
+            elements.heartsContainer.innerHTML = '';
+            isOpen = false;
+        });
+
+        // بدء الخطوات
+        buttons.start.yes.addEventListener('click', () => {
+            elements.music.play();
+            steps.start.classList.add('hidden');
+            buttons.start.yes.classList.add('hidden');
+            buttons.start.no.classList.add('hidden');
+            steps.step1.classList.remove('hidden');
+        });
+
+        // التحكم في الخطوات والجيف
+        const transitionStep = (current, next) => {
+            current.classList.add('hidden');
+            next.classList.remove('hidden');
+            
+            if (next === steps.step3) {
+                elements.specialGif.classList.add('visible');
+                elements.specialGif.classList.remove('hidden');
+            }
+            
+            if (next === steps.step4) {
+                elements.specialGif.classList.remove('visible');
+                elements.specialGif.classList.add('hidden');
+                elements.music.pause();
+            }
+
+            if (next === steps.step4) {
+                let countdown = 3;
+                elements.countdown.textContent = `Video will start in ${countdown}...`;
+                const countdownInterval = setInterval(() => {
+                    countdown--;
+                    if (countdown > 0) {
+                        elements.countdown.textContent = `Video will start in ${countdown}...`;
+                    } else {
+                        clearInterval(countdownInterval);
+                        elements.countdown.textContent = '';
+                        elements.videoContainer.classList.add('visible');
+                        
+                        // تحميل YouTube API
+                        const tag = document.createElement('script');
+                        tag.src = "https://www.youtube.com/iframe_api";
+                        const firstScriptTag = document.getElementsByTagName('script')[0];
+                        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+                    }
+                }, 1000);
+            }
+        };
+
+        // استئناف الموسيقى عند الضغط على Yes في الخطوة الرابعة
+        buttons.step4.yes.addEventListener('click', () => {
+            elements.music.play();
+            transitionStep(steps.step4, steps.step5);
+        });
+
+        // أحداث التنقل بين الخطوات
+        buttons.step1.yes.addEventListener('click', () => transitionStep(steps.step1, steps.step2));
+        buttons.step2.yes.addEventListener('click', () => transitionStep(steps.step2, steps.step3));
+        buttons.step3.yes.addEventListener('click', () => transitionStep(steps.step3, steps.step4));
+    });
+</script>
+</body>
+</html>
